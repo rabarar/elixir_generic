@@ -1,6 +1,6 @@
 # Generic
 
-**TODO: Add description**
+**A generic example of a registered, supervised collection of named homogenous servers**
 
 ## Installation
 
