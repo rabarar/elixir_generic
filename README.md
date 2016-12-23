@@ -14,6 +14,15 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
+    or with github
+
+   ```elixir
+    defp deps do
+	[{:generic, github: "rabarar/elixir_generic"}]
+    end
+    ```
+
+
   2. Ensure `generic` is started before your application:
 
     ```elixir
