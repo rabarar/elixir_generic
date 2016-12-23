@@ -3,12 +3,17 @@ defmodule Generic.Server do
 
   @registry Generic.Registry
   @server   :server_name
+
   #API
   #
   
   def start_link(name) do
     # use a via tuple to register the name
     GenServer.start_link(__MODULE__, [], name: via(name))
+  end
+
+  def get_registry_name do
+    @server
   end
 
   def add_message(server_name, message) do
@@ -21,7 +26,7 @@ defmodule Generic.Server do
 
   def via(server_name) do
     # via tuple format: {:via, mod, term}
-    {:via, @registry, {@server , server_name}}
+    {:via, @registry, {@server, server_name}}
   end
 
   #SERVER
