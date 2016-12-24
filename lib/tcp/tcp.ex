@@ -7,6 +7,7 @@ defmodule TCPServer do
       # use a via tuple to register the name
       GenServer.start_link(__MODULE__, opts, name: via(name))
     end
+
    def via(server_name) do
      #via tuple format: {:via, mod, term}
      {:via, :gproc, {:n, :l, {@server, server_name}}}

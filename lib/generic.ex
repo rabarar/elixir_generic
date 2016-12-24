@@ -1,7 +1,7 @@
 defmodule Generic do
 
   def run_generic do
-    Generic.Supervisor.start_link(:sup1, %{worker: Generic.Server, opts: %{}})
+    Generic.Supervisor.start_link(:sup1, %{worker: Generic.Server, opts: %{a: 1}})
     Generic.Supervisor.start_server(:sup1, "s1")
   end
 
