@@ -2,22 +2,25 @@
 defmodule Generic.Supervisor do
   use Supervisor
 
-  @supervisor :supervisor
+  #@supervisor :supervisor
 
-  def start_link do
-    Supervisor.start_link(__MODULE__, [], name: @supervisor)
+  def start_link(sup, %{worker: worker, opts: opts}) do
+    Supervisor.start_link(__MODULE__, %{worker: worker, opts: opts}, name: sup)
   end
 
 
-  def start_server(name) do
-    Supervisor.start_child(@supervisor, [name])
+  def start_server(sup, name) do
+    Supervisor.start_child(sup, [name])
   end
 
-  def init(_) do
+  def init(%{worker: worker, opts: opts}) do
+    IO.puts "opts = #{inspect opts}"
     children = [
-      worker(Generic.Server, [])
+      worker(worker, [opts])
     ]
 
+    IO.puts "attempting to supervisor children..."
+    
     # no process is started with :simple_one_for_one as opposed to :one_for_one, until we call start_child/2 in start_server/1
     supervise(children, strategy: :simple_one_for_one)
   end

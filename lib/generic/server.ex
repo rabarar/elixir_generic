@@ -7,9 +7,9 @@ defmodule Generic.Server do
   #API
   #
   
-  def start_link(name) do
+  def start_link(opts, name) do
     # use a via tuple to register the name
-    GenServer.start_link(__MODULE__, [], name: via(name))
+    GenServer.start_link(__MODULE__, [opts], name: via(name))
   end
 
   def get_registry_name do

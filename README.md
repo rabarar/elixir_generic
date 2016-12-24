@@ -34,16 +34,18 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Example usage
 
+
 ## start a registry and a supervisor 
 
 ```
 Generic.Registry.start_link
-Generic.Supervisor.start_link
+Generic.Supervisor.start_link(:super, %{worker: GenericServer, opts %{}}) ## for a GenServer style server
+Generic.Supervisor.start_link(:super, %{worker: TCPServer, opts: %{port: 4000}}) ## for a tcp server accepting connections
 ```
 
 ## start a server under a supervisor 
 ```
-Generic.Supervisor.start_server("servername")
+Generic.Supervisor.start_server(:super, "servername")
 ```
 
 ## send and receive messages to a server
