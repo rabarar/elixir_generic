@@ -1,7 +1,6 @@
 defmodule Generic.Server do
   use GenServer
 
-  @registry Generic.Registry
   @server   :server_name
 
   #API
@@ -26,7 +25,7 @@ defmodule Generic.Server do
 
   def via(server_name) do
     # via tuple format: {:via, mod, term}
-    {:via, @registry, {@server, server_name}}
+    {:via, :gproc, {:n, :l, {@server, server_name}}}
   end
 
   #SERVER

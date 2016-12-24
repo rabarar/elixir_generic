@@ -1,12 +1,17 @@
 defmodule TCPServer do
 
     require Logger
+    @server   :server_name
 
     def start_link(opts, name) do
       # use a via tuple to register the name
-      GenServer.start_link(__MODULE__, opts, name: Generic.Server.via(name))
+      GenServer.start_link(__MODULE__, opts, name: via(name))
     end
-
+   def via(server_name) do
+     #via tuple format: {:via, mod, term}
+     {:via, :gproc, {:n, :l, {@server, server_name}}}
+   end
+    
     def init(opts) do
 
       case Map.has_key?(opts, :service) do
