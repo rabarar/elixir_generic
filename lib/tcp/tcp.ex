@@ -12,15 +12,16 @@ defmodule TCPServer do
       case Map.has_key?(opts, :service) do
         true ->
           Logger.info "TCPServer.init: Accepting connections on port #{opts.port} and server #{opts.service}"
+          Task.start(fn -> accept(opts.port, opts.service) end)
         false ->
           Logger.info "TCPServer.init: Accepting connections on port #{opts.port}"
+          Task.start(fn -> accept(opts.port, :echo) end)
       end
       
-      Task.start(fn -> accept(opts.port) end)
-      {:ok, opts.port}
+      {:ok, opts}
     end
 
-    def accept(port) do
+    def accept(port, service) do
       # The options below mean:
       #
       # 1. `:binary` - receives data as binaries (instead of lists)
@@ -31,13 +32,20 @@ defmodule TCPServer do
       {:ok, socket} = :gen_tcp.listen(port,
                         [:binary, packet: :line, active: false, reuseaddr: true])
       Logger.info "Accepting connections on port #{port}"
-      loop_acceptor(socket)
+      loop_acceptor(socket, service)
     end
 
-    defp loop_acceptor(socket) do
+    defp loop_acceptor(socket, service) do
       {:ok, client} = :gen_tcp.accept(socket)
-      serve(client)
-      loop_acceptor(socket)
+
+      case service do
+        :echo ->
+            serve(client)
+        _ ->
+            service.serve(client)
+      end
+
+      loop_acceptor(socket, service)
     end
 
     defp serve(socket) do
