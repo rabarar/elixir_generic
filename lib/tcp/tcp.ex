@@ -8,7 +8,7 @@ defmodule TCPServer do
     end
 
     def init(opts) do
-      Logger.info "init: Accepting connections on port #opts.port}"
+      Logger.info "init: Accepting connections on port #{opts.port}"
       Task.start(fn -> accept(opts.port) end)
       {:ok, opts.port}
     end
@@ -36,7 +36,7 @@ defmodule TCPServer do
     defp serve(socket) do
       case read_line(socket) do
         {:ok, :closed} ->
-          Lopgger.info "Connection closed by peer"
+          Logger.info "Connection closed by peer"
 
         {:ok, data} ->
           write_line(data, socket)
