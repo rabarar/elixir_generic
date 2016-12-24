@@ -14,7 +14,7 @@ defmodule Generic.Supervisor do
   end
 
   def init(%{worker: worker, opts: opts}) do
-    IO.puts "opts = #{inspect opts}"
+    IO.puts "init: opts = #{inspect opts}"
     children = [
       worker(worker, [opts])
     ]

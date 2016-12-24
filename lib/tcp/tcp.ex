@@ -8,7 +8,14 @@ defmodule TCPServer do
     end
 
     def init(opts) do
-      Logger.info "init: Accepting connections on port #{opts.port}"
+
+      case Map.has_key?(opts, :service) do
+        true ->
+          Logger.info "TCPServer.init: Accepting connections on port #{opts.port} and server #{opts.service}"
+        false ->
+          Logger.info "TCPServer.init: Accepting connections on port #{opts.port}"
+      end
+      
       Task.start(fn -> accept(opts.port) end)
       {:ok, opts.port}
     end
@@ -38,6 +45,9 @@ defmodule TCPServer do
         {:ok, :closed} ->
           Logger.info "Connection closed by peer"
 
+        {:ok, :shutdown} ->
+          Logger.info "Connection shutdown by peer"
+
         {:ok, data} ->
           write_line(data, socket)
           serve(socket)
@@ -47,7 +57,17 @@ defmodule TCPServer do
 
     defp read_line(socket) do
       case :gen_tcp.recv(socket, 0) do
-        {:ok, data} -> {:ok, data}
+        {:ok, data} ->
+          case data |> String.replace("\r", "") |> String.replace("\n", "") do
+            "bye" -> 
+            :gen_tcp.shutdown(socket, :read_write)
+            Logger.info "Got shutdown"
+              {:ok, :shutdown}
+
+            _ ->
+              Logger.info "received [#{inspect data}]"
+              {:ok, data}
+          end
 
         {:error, :closed}  -> {:ok, :closed}
 
